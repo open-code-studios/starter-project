@@ -1,0 +1,55 @@
+server:
+  port: 8081
+
+spring:
+  profiles:
+    active: dev
+  application:
+    name: AUTH-SERVICE
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: postgres
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          time_zone: UTC
+    generate-ddl: true
+#  config:
+#    import: optional:configserver:http://config-server:8763
+application:
+  security:
+    jwt:
+      secret-key: 7WE845YN358TY58VG59O4YUNT849WYT9O85Y6N859YTN889WO456YN98WV4N5Y9Q
+      expiration: 60000 # 15 min in ms
+      cookie-name: jwt-token
+      refresh-token:
+        expiration: 120000 # 15 days in ms
+        cookie-name: refresh-token
+      cookie:
+        name: auth_token
+        secure: true
+        http-only: true
+        same-site: strict
+  default-admin:
+    username: superadmin
+    password: admin
+    email: admin@admin.com
+    firstname: Super
+    lastname: Admin
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka

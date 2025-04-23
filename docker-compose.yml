@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  service-registry:
+    build: ./service-registry
+    container_name: service-registry
+    ports:
+      - "8761:8761"
+    networks:
+      - internal
+
+  config-server:
+    build: ./config-server
+    container_name: config-server
+    ports:
+      - "8763:8763"
+    depends_on:
+      - service-registry
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka
+    networks:
+      - internal
+
+  auth-service:
+    build: ./auth-service
+    container_name: auth-service
+    expose:
+      - "8081" # not expose to public
+    depends_on:
+      - config-server
+      - service-registry
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/postgres
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+    networks:
+      - internal
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    ports:
+      - "8888:8888" # only this is public
+    depends_on:
+      - auth-service
+      - config-server
+      - service-registry
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-registry:8761/eureka
+    networks:
+      - internal
+
+  postgres-db:
+    image: postgres:latest
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5433:5433"
+    networks:
+      - internal
+networks:
+  internal:
+    driver: bridge
