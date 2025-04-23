@@ -59,7 +59,7 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: postgres
     ports:
-      - "5433:5432"
+      - "5433:5432" # host:container (5433 externally, 5432 inside Docker)
     networks:
       - internal
 networks:
