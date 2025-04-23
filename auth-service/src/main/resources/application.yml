@@ -7,7 +7,8 @@ spring:
   application:
     name: AUTH-SERVICE
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
+    url: jdbc:postgresql://postgres:5432/postgres #docker
+#    url: jdbc:postgresql://localhost:5432/postgres #localhost
     driver-class-name: org.postgresql.Driver
     username: postgres
     password: postgres
@@ -22,8 +23,9 @@ spring:
         jdbc:
           time_zone: UTC
     generate-ddl: true
-#  config:
-#    import: optional:configserver:http://config-server:8763
+  config:
+    import: optional:configserver:http://config-server:8763 #docker
+#    import: optional:configserver:http://localhost:8763 #localhost
 application:
   security:
     jwt:
@@ -45,11 +47,11 @@ application:
     firstname: Super
     lastname: Admin
 
-eureka:
-  instance:
-    prefer-ip-address: true
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    service-url:
-      defaultZone: http://localhost:8761/eureka
+#eureka:
+#  instance:
+#    prefer-ip-address: true
+#  client:
+#    register-with-eureka: true
+#    fetch-registry: true
+#    service-url:
+#      defaultZone: http://localhost:8761/eureka
